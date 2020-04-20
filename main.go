@@ -45,15 +45,15 @@ func main() {
 		if token.Error() != nil {
 			log.Println(token.Error())
 		}
+		binTime := getBinValue(binFullTime)
+
+		token = mqttClient.Publish("homeassistant/sensor/rockrobo_bin/state", 0, false, binTime)
+		if token.Error() != nil {
+			log.Println(token.Error())
+		}
+
 	})
 	c.Start()
-
-	binTime := getBinValue(binFullTime)
-
-	token := mqttClient.Publish("homeassistant/sensor/rockrobo_bin/state", 0, false, binTime)
-	if token.Error() != nil {
-		log.Println(token.Error())
-	}
 
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
