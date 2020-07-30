@@ -13,24 +13,40 @@ import (
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/fsnotify/fsnotify"
-	"github.com/robfig/cron/v3"
+	"gopkg.in/robfig/cron.v3"
+	// "github.com/robfig/cron/v3"
 )
 
-var homeAssConfigTopic = "homeassistant/sensor/rockrobo_bin/config"
-var homeAssConfig = `
-{"name": "vacuumbin", "unit_of_measurement": "%", "state_topic": "homeassistant/sensor/rockrobo_bin/state"}
-`
 
 var FilePath = "/mnt/data/rockrobo/RoboController.cfg"
+var percentage = false;
 
 func main() {
 
 	var mqttServer string
+	var sensorName string
 	var binFullTime float64
+	var unitOfMeasurement string
 	flag.StringVar(&mqttServer, "mqtt_server", "mqtt://localhost:1883", "mqtt broker address")
-	flag.Float64Var(&binFullTime, "full_time", 2400., "Amount of seconds where the bin will be considered full")
+	flag.StringVar(&sensorName, "sensor_name", "vacuumbin", "Name of sensor in Home Assistant")
+	flag.Float64Var(&binFullTime, "full_time", 0, "Amount of seconds where the bin will be considered full")
 	flag.Parse()
 
+	if binFullTime > 0 {
+		percentage = true
+	}
+
+	if percentage {
+		unitOfMeasurement = "%"
+	} else {
+		unitOfMeasurement = "min"
+	}
+
+	var homeAssConfig = fmt.Sprintf("{\"name\": %[1]q, \"unit_of_measurement\": %[2]q, \"state_topic\": \"homeassistant/sensor/%[1]s/state\", \"unique_id\": %[1]q}", sensorName, unitOfMeasurement)
+	var homeAssConfigTopic = fmt.Sprintf("homeassistant/sensor/%s/config", sensorName)
+	var stateTopic = fmt.Sprintf("homeassistant/sensor/%s/state", sensorName)
+
+	
 	mqttURL, err := url.Parse(mqttServer)
 	if err != nil {
 		log.Fatalln(err)
@@ -47,7 +63,7 @@ func main() {
 		}
 		binTime := getBinValue(binFullTime)
 
-		token = mqttClient.Publish("homeassistant/sensor/rockrobo_bin/state", 0, false, binTime)
+		token = mqttClient.Publish(stateTopic, 0, false, binTime)
 		if token.Error() != nil {
 			log.Println(token.Error())
 		}
@@ -71,7 +87,7 @@ func main() {
 				time.Sleep(time.Second * 1)
 				binTime := getBinValue(binFullTime)
 
-				token := mqttClient.Publish("homeassistant/sensor/rockrobo_bin/state", 0, false, binTime)
+				token := mqttClient.Publish(stateTopic, 0, false, binTime)
 				if token.Error() != nil {
 					log.Println(token.Error())
 				}
@@ -89,6 +105,8 @@ func main() {
 	<-done
 
 }
+
+
 
 func getBinValue(binFullTime float64) string {
 
@@ -111,9 +129,13 @@ func getBinValue(binFullTime float64) string {
 	}
 	file.Close()
 	BinTime, err := strconv.ParseFloat(line, 32)
-	binCapacity := BinTime / binFullTime * 100.
-	return fmt.Sprintf("%.2f", binCapacity)
-
+	if percentage {
+		binCapacity := BinTime / binFullTime * 100.
+		return fmt.Sprintf("%.2f", binCapacity)
+	} else {
+		binCapacity := BinTime
+		return fmt.Sprintf("%d", int(binCapacity/60))
+	}
 }
 
 func connect(clientID string, uri *url.URL) mqtt.Client {
