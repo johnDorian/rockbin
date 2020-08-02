@@ -40,7 +40,7 @@ func TestConvert(t *testing.T) {
 
 		b.Update()
 		assert.Equal(100., b.Seconds)
-		b.Convert()
+		b.convert()
 		assert.Equal(test.expected, b.Value)
 
 	}
