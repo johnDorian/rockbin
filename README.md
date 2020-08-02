@@ -3,9 +3,10 @@ This repo contains the code for a simple go based mqtt client which will send th
 
 I'm using home assistant, hence the home assistant auto discovery stuff.
 
-The general idea is that the home assistant config is sent every minute, and the bin value is sent when the `/mnt/data/rockrobo/RoboController.cfg` is modified. The file is only modified after cleaning or returning to the dock. 
+The general idea is that the home assistant config is sent every minute, and the bin value is sent when the `/mnt/data/rockrobo/RoboController.cfg` is modified. The file is only modified after cleaning or returning to the dock. Bin value in RoboController.cfg is named: bin_in_time. This value is expressed in seconds from last cleaning of vacuum bin. After cleaning value is set to 0.
 
 I decided to use a percentage value, in order to use a gauge in home assistant. I'm using 40 minutes as the time that the vacuum needs to be emptied. This can be changed as an input value to the mqtt client. 
+It's also possible to create sensor expressed in minutes - please refer to parameters table.
 
 
 ## Building for the vacuum
@@ -23,9 +24,21 @@ You will need to change the address of the mqtt broker and the amount of seconds
 ## Install
 
 The client can be started/tested using the following command. 
+
+If you'd like to have sensor expressed in % where 40mins (40*60 = 2400) is 100% then use this configuration:
 ```bash
-./rockbin -mqtt_server mqtt://192.168.0.144:1883 -full_time 2400
+./rockbin -mqtt_server mqtt://192.168.0.144:1883 -full_time 2400 -sensor_name first_vacuum_bin
 ```
+If you'd like to have sensor expressed in minutes then use this configuration:
+```bash
+./rockbin -mqtt_server mqtt://192.168.0.144:1883 -sensor_name first_vacuum_bin
+```
+
+|parameter|default|description|
+|---------|:-----:|:----------|
+|-mqtt_server     |mqtt://localhost:1883|MQTT server address|
+|-full_time|0|When 0 then sensor is expressed in minutes. When greater than 0 then sensor is expressed in % where full_time is number of seconds in 100%.| 
+|-sensor_name|vacuumbin|Name of sensor created in Home Assistant.|
 
 ### Setting it up as an upstart service
 
@@ -33,6 +46,8 @@ The client can be started/tested using the following command.
 ```bash
 # put the binary in the correct folder
 cp .rockbin /usr/local/bin/
+# edit rockbin.conf and set proper parameters to rockbin command
+vi rockbin.conf
 # put the upstart config file into the correct file
 cp .rockbin.conf /etc/init/rockbin.conf
 # reload the upstart configs
@@ -74,4 +89,13 @@ An example of sending the vacuum to the rubbish bin is below:
       data:
         message: "Please empty the vacuum"
         title: "Vacuum going to the bin"
-```
+
+  - alias: 'Go home when bin is empty'
+    trigger: 
+      platform: numeric_state
+      entity_id: sensor.vacuumbin
+      below: 1
+    action: 
+      - service: vacuum.return_to_base
+        entity_id: vacuum.xiaomi_vacuum_cleaner
+    ```
