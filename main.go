@@ -8,6 +8,7 @@ import (
 	"github.com/robfig/cron/v3"
 )
 
+//Version of the package
 const Version = "v0.1.0"
 
 func main() {
