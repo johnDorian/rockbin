@@ -27,18 +27,20 @@ The client can be started/tested using the following command.
 
 If you'd like to have sensor expressed in % where 40mins (40*60 = 2400) is 100% then use this configuration:
 ```bash
-./rockbin -mqtt_server mqtt://192.168.0.144:1883 -full_time 2400 -sensor_name first_vacuum_bin
+./rockbin -mqtt_server mqtt://192.168.0.144:1883 -full_time 2400
 ```
 If you'd like to have sensor expressed in minutes then use this configuration:
 ```bash
-./rockbin -mqtt_server mqtt://192.168.0.144:1883 -sensor_name first_vacuum_bin
+./rockbin -mqtt_server mqtt://192.168.0.144:1883 -measurement_unit min
 ```
 
 |parameter|default|description|
 |---------|:-----:|:----------|
 |-mqtt_server     |mqtt://localhost:1883|MQTT server address|
-|-full_time|0|When 0 then sensor is expressed in minutes. When greater than 0 then sensor is expressed in % where full_time is number of seconds in 100%.| 
 |-sensor_name|vacuumbin|Name of sensor created in Home Assistant.|
+|-full_time|0|When 0 then sensor is expressed in minutes. When greater than 0 then sensor is expressed in % where full_time is number of seconds in 100%.| 
+|-measurement_unit|%|In what unit should the measurement be sent (%, sec, min)|
+|-file_path|/mnt/data/rockrobo/RoboController.cfg|file path of RoboController.cfg|
 
 ### Setting it up as an upstart service
 
@@ -98,4 +100,4 @@ An example of sending the vacuum to the rubbish bin is below:
     action: 
       - service: vacuum.return_to_base
         entity_id: vacuum.xiaomi_vacuum_cleaner
-    ```
+```
