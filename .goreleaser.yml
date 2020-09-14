@@ -11,12 +11,9 @@ builds:
     goarm: 
       - 7
 archives:
-  - 
-    builds:
-      - default
-    replacements:
-      linux: Linux
+  -
     format: binary
+    name_template: "{{ .Binary }}_{{ .Os }}_{{ .Arch }}"
     
 checksum:
   name_template: 'checksums.txt'
