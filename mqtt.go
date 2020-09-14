@@ -14,7 +14,7 @@ type mqttConfig struct {
 	Name              string      `json:"name"`
 	UnitOfMeasurement string      `json:"unit_of_measurement"`
 	StateTopic        string      `json:"state_topic"`
-	ConfigTopic       string      `json:"config_topic"`
+	ConfigTopic       string      `json:"-"`
 	UniqueID          string      `json:"unique_id"`
 	Client            mqtt.Client `json:"-"`
 }

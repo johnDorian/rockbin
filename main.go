@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -24,7 +23,6 @@ func main() {
 
 		mqttClient.SendConfig()
 		bin.Update()
-		fmt.Println(bin.Value)
 		mqttClient.Send(bin.Value)
 	})
 	c.Start()
