@@ -12,11 +12,16 @@ builds:
       - 7
 archives:
   - 
+    builds:
+      - default
+    replacements:
+      linux: Linux
     format: binary
+    
 checksum:
   name_template: 'checksums.txt'
 snapshot:
-  name_template: "{{ .Tag }}-next"
+  name_template: "{{ .Tag }}"
 changelog:
   sort: asc
   filters:
