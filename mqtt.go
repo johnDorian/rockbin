@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"os"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -36,6 +37,12 @@ func createClientOptions(clientID string, uri *url.URL) *mqtt.ClientOptions {
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(fmt.Sprintf("tcp://%s", uri.Host))
 	opts.SetClientID(clientID)
+	if username := os.Getenv("MQTT_USERNAME"); len(username) > 0 {
+		opts.SetUsername(username)
+	}
+	if password := os.Getenv("MQTT_PASSWORD"); len(password) > 0 {
+		opts.SetPassword(password)
+	}
 	return opts
 }
 
