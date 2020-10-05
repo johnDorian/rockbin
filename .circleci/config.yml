@@ -29,5 +29,7 @@ jobs:
     steps: 
       - checkout
       - run: |
-          docker run -v /tests/password.txt:/password.txt -v /tests/mosquitto.conf:/mosquitto/config/mosquitto.conf eclipse-mosquitto:latest
+          echo "user:pass" > /mosquitto/config/password.txt
+          echo "password.txt" > /mosquitto/config/mosquitto.conf
+          sudo apt-get install -y mosquitto golang-go
           go test ./...
