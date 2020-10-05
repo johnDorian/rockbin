@@ -29,8 +29,9 @@ jobs:
     steps: 
       - checkout
       - run: |
-          mkdir -p /mosquitto/config
+          sudo mkdir -p /mosquitto/config
+          sudo mkfir -p /etc/mosquitto/conf.d
           echo "user:pass" > /mosquitto/config/password.txt
-          echo "password.txt" > /mosquitto/config/mosquitto.conf
+          sudo echo "password_file /mosquitto/config/password.txt" > /etc/mosquitto/conf.d/default.conf
           sudo apt-get install -y mosquitto golang-go
           go test ./...
