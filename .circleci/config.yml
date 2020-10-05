@@ -3,6 +3,7 @@ version: 2.1
 workflows:
   main:
     jobs:
+      - test
       - release:
           # Only run this job on git tag pushes
           filters:
@@ -11,9 +12,22 @@ workflows:
             tags:
               only: /v[0-9]+(\.[0-9]+)*(-.*)*/
 jobs:
+  build: 
+    docker:
+      - image: circleci/golang:1.15
+    steps:
+      - checkout
+      - run: go build
   release:
     docker:
       - image: circleci/golang:1.15
     steps:
       - checkout
       - run: curl -sL https://git.io/goreleaser | bash
+  test:
+    docker:
+      - image: circleci/golang:1.15
+      - image: eclipse-mosquitto
+    steps:
+      - checkout
+      - run: go test ./...
