@@ -25,9 +25,8 @@ jobs:
       - checkout
       - run: curl -sL https://git.io/goreleaser | bash
   test:
-    machine: true
-    steps: 
+    docker:
+      - image: circleci/golang:1.15
+    steps:
       - checkout
-      - run: |
-          go get -u ./...
-          go test ./...
+      - run: go test ./...
