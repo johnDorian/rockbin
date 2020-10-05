@@ -29,5 +29,5 @@ jobs:
     steps: 
       - checkout
       - run: |
-      sudo apt install -y golang-go    
-      go test ./...
+          sudo apt install -y golang-go    
+          go test ./...
