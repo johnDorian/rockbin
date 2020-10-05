@@ -31,6 +31,6 @@ jobs:
       - run: |
           cd /tmp
           wget https://dl.google.com/go/go1.15.1.linux-amd64.tar.gz
-          tar -C /usr/local -xzf go1.15.1.linux-amd64.tar.gz
-          mv go /usr/local
+          sudo tar -C /usr/local -xzf go1.15.1.linux-amd64.tar.gz
+          sudo mv go /usr/local
           go test ./...
