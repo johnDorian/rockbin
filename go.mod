@@ -8,5 +8,6 @@ require (
 	github.com/ory/dockertest/v3 v3.6.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/stretchr/testify v1.6.1
-	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
+	golang.org/x/net v0.0.0-20201002202402-0a1ea396d57c // indirect
+	golang.org/x/sys v0.0.0-20201005172224-997123666555 // indirect
 )
