@@ -65,6 +65,7 @@ func (m *mqttConfig) Send(data string) error {
 func sendMessage(client mqtt.Client, topic string, data string) error {
 	token := client.Publish(topic, 0, false, data)
 	if token.Error() != nil {
+		log.Fatalln(token.Error())
 		return token.Error()
 	}
 	return nil
