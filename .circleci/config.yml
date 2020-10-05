@@ -25,9 +25,11 @@ jobs:
       - checkout
       - run: curl -sL https://git.io/goreleaser | bash
   test:
-    docker:
-      - image: circleci/golang:1.15
-      - image: eclipse-mosquitto
-    steps:
+    machine: true
+    steps: 
       - checkout
-      - run: go test ./...
+      - run: |
+        echo "user:pass" > /tests/password.txt
+        echo "password.txt" > /tests/mosquitto.conf
+        docker run -v /tests/password.txt:/password.txt -v /tests/mosquitto.conf:/mosquitto/config/mosquitto.conf eclipse-mosquitto:latest
+        go test ./...
