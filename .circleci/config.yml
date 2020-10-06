@@ -21,6 +21,6 @@ jobs:
   test:
     docker:
       - image: circleci/golang:1.15
-      - image: eclipse-mosquitto
     steps:
+      - checkout
       - run: go test ./...
