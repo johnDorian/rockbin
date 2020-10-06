@@ -42,6 +42,8 @@ If you'd like to have sensor expressed in minutes then use this configuration:
 |-measurement_unit|%|In what unit should the measurement be sent (%, sec, min)|
 |-file_path|/mnt/data/rockrobo/RoboController.cfg|file path of RoboController.cfg|
 
+If your mqtt broker requires authentication, you can set the environment variables (MQTT_USERNAME and MQTT_PASSWORD) in the `rockbin.conf` file. 
+
 ### Setting it up as an upstart service
 
 
