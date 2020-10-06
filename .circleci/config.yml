@@ -26,12 +26,11 @@ jobs:
       - run: curl -sL https://git.io/goreleaser | bash
   test:
     machine: true
-      environment:
-        GOPATH: $HOME/.go_project
-        PATH: $PATH:$HOME/.go_workspace/bin
     steps: 
       - checkout
       - run: |
+          export GOPATH=$HOME/.go_project
+          export PATH=$PATH:$HOME/.go_workspace/bin
           go env
           go build
           go test ./...
