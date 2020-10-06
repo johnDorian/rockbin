@@ -29,5 +29,6 @@ jobs:
     steps: 
       - checkout
       - run: |
-          go get ...
+          go env
+          go build
           go test ./...
