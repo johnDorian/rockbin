@@ -12,6 +12,12 @@ workflows:
             tags:
               only: /v[0-9]+(\.[0-9]+)*(-.*)*/
 jobs:
+  build: 
+    docker:
+      - image: circleci/golang:1.15
+    steps:
+      - checkout
+      - run: go build
   release:
     docker:
       - image: circleci/golang:1.15
@@ -19,8 +25,15 @@ jobs:
       - checkout
       - run: curl -sL https://git.io/goreleaser | bash
   test:
-    docker:
-      - image: circleci/golang:1.15
-    steps:
+    machine: true
+    steps: 
       - checkout
-      - run: go test ./...
+      - run: |
+          wget https://dl.google.com/go/go1.15.1.linux-amd64.tar.gz
+          tar -xvf go1.15.1.linux-amd64.tar.gz
+          sudo rm -r /usr/local/go
+          sudo mv go /usr/local
+          export GOROOT=/usr/local/go
+          export GOPATH=$HOME/go
+          export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+          go test ./...
