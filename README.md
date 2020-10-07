@@ -1,6 +1,6 @@
 # rockbin
 
-[![johnDorian](https://circleci.com/gh/johnDorian/rockbin.svg?style=shield)](https://circleci.com/gh/johnDorian/rockbin)
+[![johnDorian](https://circleci.com/gh/johnDorian/rockbin.svg?style=shield)](https://circleci.com/gh/johnDorian/rockbin) [![codecov](https://codecov.io/gh/johnDorian/rockbin/branch/master/graph/badge.svg)](https://codecov.io/gh/johnDorian/rockbin)
 
 This repo contains the code for a simple go based mqtt client which will send the bin status to a mqtt server. 
 
