@@ -2,11 +2,14 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/url"
 	"os"
+	"path"
 	"testing"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/ory/dockertest/v3"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -43,5 +46,37 @@ func TestcreateClientOptions(t *testing.T) {
 		opts := createClientOptions(test.clientID, uri)
 		assert.Equal(expected, opts)
 	}
+
+}
+
+func TestConnect(t *testing.T) {
+	assert := assert.New(t)
+	pool, err := dockertest.NewPool("")
+	if err != nil {
+		log.Fatalf("Could not connect to docker: %s", err)
+	}
+	dir, _ := os.Getwd()
+
+	options := &dockertest.RunOptions{
+		Repository: "eclipse-mosquitto",
+		Tag:        "latest",
+
+		ExposedPorts: []string{"1883"},
+		Mounts: []string{fmt.Sprintf("%v:/mosquitto/config/mosquitto.conf", path.Join(dir, "tests/mosquitto.conf")),
+			fmt.Sprintf("%v:/password.txt", path.Join(dir, "tests/password.txt"))},
+	}
+
+	resource, err := pool.RunWithOptions(options)
+	if err != nil {
+		log.Fatalf("Could not start resource: %s", err)
+	}
+
+	config := mqttConfig{Name: "hello", UnitOfMeasurement: "hello", StateTopic: "hello", ConfigTopic: "hello", UniqueID: "hello"}
+	uri, _ := url.Parse(fmt.Sprintf("mqtt://127.0.0.1:%v", resource.GetPort("1883/tcp")))
+	os.Setenv("MQTT_USERNAME", "user")
+	os.Setenv("MQTT_PASSWORD", "pass")
+	config.Connect(uri)
+	err = pool.Purge(resource)
+	assert.True(config.Client.IsConnected())
 
 }
