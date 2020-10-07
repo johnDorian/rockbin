@@ -1,4 +1,7 @@
 # rockbin
+
+[![johnDorian](https://circleci.com/gh/johnDorian/rockbin.svg?style=shield)](https://circleci.com/gh/johnDorian/rockbin)
+
 This repo contains the code for a simple go based mqtt client which will send the bin status to a mqtt server. 
 
 I'm using home assistant, hence the home assistant auto discovery stuff.
