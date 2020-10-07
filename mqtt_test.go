@@ -51,6 +51,30 @@ func TestcreateClientOptions(t *testing.T) {
 
 func TestConnect(t *testing.T) {
 	assert := assert.New(t)
+	var testData = []struct {
+		username string
+		password string
+	}{
+		{"user", "pass"},
+		{"user1", "!$%&/()?#+*12345"},
+		{"user2", `hello"world`},
+	}
+	resource, pool := spinUpMQTT()
+	for _, up := range testData {
+		config := mqttConfig{Name: "hello", UnitOfMeasurement: "hello", StateTopic: "hello", ConfigTopic: "hello", UniqueID: "hello"}
+		uri, _ := url.Parse(fmt.Sprintf("mqtt://127.0.0.1:%v", resource.GetPort("1883/tcp")))
+		os.Setenv("MQTT_USERNAME", up.username)
+		os.Setenv("MQTT_PASSWORD", up.password)
+		config.Connect(uri)
+		assert.True(config.Client.IsConnected())
+
+	}
+
+	pool.Purge(resource)
+
+}
+
+func spinUpMQTT() (*dockertest.Resource, *dockertest.Pool) {
 	pool, err := dockertest.NewPool("")
 	if err != nil {
 		log.Fatalf("Could not connect to docker: %s", err)
@@ -70,13 +94,5 @@ func TestConnect(t *testing.T) {
 	if err != nil {
 		log.Fatalf("Could not start resource: %s", err)
 	}
-
-	config := mqttConfig{Name: "hello", UnitOfMeasurement: "hello", StateTopic: "hello", ConfigTopic: "hello", UniqueID: "hello"}
-	uri, _ := url.Parse(fmt.Sprintf("mqtt://127.0.0.1:%v", resource.GetPort("1883/tcp")))
-	os.Setenv("MQTT_USERNAME", "user")
-	os.Setenv("MQTT_PASSWORD", "pass")
-	config.Connect(uri)
-	err = pool.Purge(resource)
-	assert.True(config.Client.IsConnected())
-
+	return resource, pool
 }
