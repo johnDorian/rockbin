@@ -74,6 +74,35 @@ func TestConnect(t *testing.T) {
 
 }
 
+func TestpreparePayload(t *testing.T) {
+	assert := assert.New(t)
+	var TestData = []struct {
+		item1       string
+		item2       string
+		expected    string
+		expectError bool
+	}{
+		{"item1", "item2", `{"item1":"item1","item2":"item2"}`, false},
+	}
+
+	for _, test := range TestData {
+		data := struct {
+			Item1 string `json:"item1"`
+			Item2 string `json:"item2"`
+		}{
+			test.item1, test.item2,
+		}
+		payload, err := preparePayload(data)
+		assert.Equal(payload, test.expected)
+		if test.expectError {
+			assert.Error(err)
+		} else {
+			assert.NoError(err)
+		}
+	}
+
+}
+
 func spinUpMQTT() (*dockertest.Resource, *dockertest.Pool) {
 	pool, err := dockertest.NewPool("")
 	if err != nil {
