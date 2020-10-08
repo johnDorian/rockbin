@@ -21,7 +21,7 @@ func config() (Bin, mqttConfig) {
 	flag.Float64Var(&binFullTime, "full_time", 2400., "Amount of seconds where the bin will be considered full")
 	flag.StringVar(&unitOfMeasurement, "measurement_unit", "%", "In what unit should the measurement be sent (%, sec, min)")
 	flag.StringVar(&FilePath, "file_path", "/mnt/data/rockrobo/RoboController.cfg", "file path of RoboController.cfg")
-	flag.StringVar(&LoggingLevel, "loglevel", "Fatal", "Level of logging (trace, debug, info, warn, error, fatal, panic). Default: fatal")
+	flag.StringVar(&LoggingLevel, "log_level", "Fatal", "Level of logging (trace, debug, info, warn, error, fatal, panic).")
 	flag.Parse()
 
 	setUpLogger(LoggingLevel)
