@@ -10,7 +10,7 @@ import (
 )
 
 //Version of rockbin
-const Version = "v0.1.1"
+const Version = "v0.1.2"
 
 func main() {
 	bin, mqttClient := config()
