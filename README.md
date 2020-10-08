@@ -36,6 +36,16 @@ If you'd like to have sensor expressed in minutes then use this configuration:
 ```bash
 ./rockbin -mqtt_server mqtt://192.168.0.144:1883 -measurement_unit min
 ```
+You can pass usernames and passwords via the environment variables: 
+```bash
+MQTT_USERNAME=mrmqtt MQTT_PASSWORD=coolpass ./rockbin -mqtt_server mqtt://192.168.0.144:1883 -measurement_unit min
+```
+You can increase the logging level to help setting up connections using 
+```bash
+./rockbin -mqtt_server mqtt://192.168.0.144:1883 -measurement_unit min -log_level debug
+```
+
+
 
 |parameter|default|description|
 |---------|:-----:|:----------|
@@ -44,7 +54,9 @@ If you'd like to have sensor expressed in minutes then use this configuration:
 |-full_time|0|When 0 then sensor is expressed in minutes. When greater than 0 then sensor is expressed in % where full_time is number of seconds in 100%.| 
 |-measurement_unit|%|In what unit should the measurement be sent (%, sec, min)|
 |-file_path|/mnt/data/rockrobo/RoboController.cfg|file path of RoboController.cfg|
+|-log_level|Fatal|Level of logging (trace, debug, info, warn, error, fatal, panic).|
 
+        
 If your mqtt broker requires authentication, you can set the environment variables (MQTT_USERNAME and MQTT_PASSWORD) in the `rockbin.conf` file. 
 
 ### Setting it up as an upstart service
