@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"time"
 
-	"log"
 	"os"
 	"strconv"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var defaultCapacity = 60 * 40.
@@ -42,6 +43,7 @@ func (b *Bin) Update() {
 	}
 	file.Close()
 	b.Seconds, err = strconv.ParseFloat(line, 32)
+	log.WithFields(log.Fields{"bin_time": b.Seconds}).Info("Parsed bin time")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -61,5 +63,6 @@ func (b *Bin) convert() {
 	default:
 		b.Value = fmt.Sprintf("%.2f", b.Seconds/b.Capacity*100.)
 	}
+	log.WithFields(log.Fields{"bin_time": b.Seconds, "value": b.Value}).Info("Converted Value")
 
 }

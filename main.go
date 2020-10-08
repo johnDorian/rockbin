@@ -1,18 +1,18 @@
 package main
 
 import (
-	"log"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/robfig/cron/v3"
 )
 
-//Version
+//Version of rockbin
 const Version = "v0.1.1"
 
 func main() {
-
 	bin, mqttClient := config()
 
 	// on launch tell home assistant that we exist
@@ -29,6 +29,7 @@ func main() {
 	c.Start()
 
 	// Setup a file watcher to get instance updates on file changes
+	log.Debug("Setting up file watcher")
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Println(err)

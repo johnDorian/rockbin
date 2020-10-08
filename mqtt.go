@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/url"
 	"os"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -24,12 +25,14 @@ func (m *mqttConfig) Connect(uri *url.URL) {
 	opts := createClientOptions(m.Name, uri)
 	client := mqtt.NewClient(opts)
 	token := client.Connect()
+	log.WithFields(log.Fields{"mqtt_broker": uri.Host}).Debug("Connecting to mqtt broker")
 	for !token.WaitTimeout(10 * time.Second) {
 	}
 
 	if err := token.Error(); err != nil {
 		log.Fatalln(err)
 	}
+	log.WithFields(log.Fields{"mqtt_broker": uri.Host}).Info("Connected to mqtt broker")
 	m.Client = client
 }
 
@@ -39,9 +42,11 @@ func createClientOptions(clientID string, uri *url.URL) *mqtt.ClientOptions {
 	opts.SetClientID(clientID)
 	if username := os.Getenv("MQTT_USERNAME"); len(username) > 0 {
 		opts.SetUsername(username)
+		log.WithFields(log.Fields{"mqtt_username": username}).Debug("Found mqtt username")
 	}
 	if password := os.Getenv("MQTT_PASSWORD"); len(password) > 0 {
 		opts.SetPassword(password)
+		log.Debug("Found mqtt password")
 	}
 	return opts
 }
@@ -52,12 +57,14 @@ func (m *mqttConfig) SendConfig() error {
 	if err != nil {
 		return err
 	}
+	log.Debug("Sending mqtt config")
 	err = sendMessage(m.Client, m.ConfigTopic, mqttPayload)
 	return err
 }
 
 // Send any data to home assistant
 func (m *mqttConfig) Send(data string) error {
+	log.Debug("Sending mqtt message")
 	err := sendMessage(m.Client, m.StateTopic, data)
 	return err
 }
