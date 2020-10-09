@@ -157,4 +157,10 @@ script
 end script
 ```
 
+If you don't require a username or password, then leave these commented out.  
+```text
+#env MQTT_USERNAME=mqttuser
+#env MQTT_PASSWORD='Some%!Strong$Pass'
+```
+
 If the upstart script is not working, but step 2 was working correctly, add the `-log_level debug` flag to the upstart script for more logging information. 
