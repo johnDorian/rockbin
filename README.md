@@ -118,3 +118,43 @@ An example of sending the vacuum to the rubbish bin is below:
       - service: vacuum.return_to_base
         entity_id: vacuum.xiaomi_vacuum_cleaner
 ```
+
+## Troubleshooting connection issues
+
+
+If you're having difficulty connecting to the mutt server, it is possible to run the rock bin app manually with debug login enabled. To do this you can do the following assuming you have copied the binary to the `/usr/local/bin/` (`cp .rockbin /usr/local/bin/`) folder. 
+
+1. Make sure the app is callable (installed correctly). 
+```bash
+rockbin --help
+```
+
+2. Test the connection to the mqtt server (change the mqtt_server address accordingly). 
+```bash
+rockbin -mqtt_server mqtt://192.168.0.144:1883 -log_level debug
+```
+
+If you require a username and password to connect to the mqtt_server, you can pass these using: 
+```bash
+MQTT_USERNAME=mqttuser MQTT_PASSWORD='Some%!Strong$Pass' rockbin -mqtt_server mqtt://192.168.0.144:1883 -log_level debug
+```
+
+3. If the above works correctly, you will need to update [rockbin.conf](rockbin.conf) accordingly. If you're using authentication a sample of the required [rockbin.conf](rockbin.conf) would look like 
+
+```text
+description     "rockbin mqtt publisher for the bin"
+start on filesystem and net-device-up IFACE=wlan0
+stop on runlevel [!2345]
+respawn
+umask 022
+setuid root
+setgid root
+console log
+env MQTT_USERNAME=mqttuser
+env MQTT_PASSWORD='Some%!Strong$Pass'
+script 
+    exec /usr/local/bin/rockbin -mqtt_server mqtt://192.168.0.144:1883 -full_time 2400
+end script
+```
+
+If the upstart script is not working, but step 2 was working correctly, add the `-log_level debug` flag to the upstart script for more logging information. 
