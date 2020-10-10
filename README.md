@@ -1,6 +1,7 @@
 # rockbin
 
 [![johnDorian](https://circleci.com/gh/johnDorian/rockbin.svg?style=shield)](https://circleci.com/gh/johnDorian/rockbin) [![codecov](https://codecov.io/gh/johnDorian/rockbin/branch/master/graph/badge.svg)](https://codecov.io/gh/johnDorian/rockbin)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FjohnDorian%2Frockbin.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FjohnDorian%2Frockbin?ref=badge_shield)
 
 This repo contains the code for a simple go based mqtt client which will send the bin status to a mqtt server. 
 
@@ -164,3 +165,6 @@ If you don't require a username or password, then leave these commented out.
 ```
 
 If the upstart script is not working, but step 2 was working correctly, add the `-log_level debug` flag to the upstart script for more logging information. 
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FjohnDorian%2Frockbin.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FjohnDorian%2Frockbin?ref=badge_large)
