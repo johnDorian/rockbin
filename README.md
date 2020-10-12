@@ -13,9 +13,15 @@ I decided to use a percentage value, in order to use a gauge in home assistant. 
 It's also possible to create sensor expressed in minutes - please refer to parameters table.
 
 
+## Contributing
+
+Feel free to make some changes (even write some unit tests) and create a PR. The main aim and scope of this project is to get the robot to report the bin status, so please keep this in mind when creating a PR. 
+
 ## Building for the vacuum
 
-Feel free to modify the code and build the binary yourself. You can build it on your computer rather than the vacuum using: 
+***Pre-built binaries are available in the releases.***
+
+You can build it on your computer rather than the vacuum using: 
 
 ```bash 
 GOARM=7 GOARCH=arm GOOS=linux go build 
@@ -74,6 +80,8 @@ cp .rockbin.conf /etc/init/rockbin.conf
 initctl reload-configuration
 # start the service
 service rockbin start
+# On firmwares >2008 you will have to restart the vacuum
+sudo reboot now
 ```
 
 ## Home assistant 
@@ -166,5 +174,22 @@ If you don't require a username or password, then leave these commented out.
 
 If the upstart script is not working, but step 2 was working correctly, add the `-log_level debug` flag to the upstart script for more logging information. 
 
+4. After adding the configuration script. Reboot the vacuum: 
+```bash
+sudo reboot now
+```
+
+5. Once the system is back up you should see the service in the list provided by: 
+```bash
+ps aux
+```
+
+6. If you had enabled debug mode earlier. You can check the logs for the output
+
+```bash
+cat /var/log/upstart/rockbin.log
+```
+
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FjohnDorian%2Frockbin.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FjohnDorian%2Frockbin?ref=badge_large)
+
