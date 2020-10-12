@@ -73,6 +73,8 @@ cp .rockbin.conf /etc/init/rockbin.conf
 initctl reload-configuration
 # start the service
 service rockbin start
+# On firmwares >2008 you will have to restart the vacuum
+sudo reboot now
 ```
 
 ## Home assistant 
@@ -164,3 +166,19 @@ If you don't require a username or password, then leave these commented out.
 ```
 
 If the upstart script is not working, but step 2 was working correctly, add the `-log_level debug` flag to the upstart script for more logging information. 
+
+4. After adding the configuration script. Reboot the vacuum: 
+```bash
+sudo reboot now
+```
+
+5. Once the system is back up you should see the service in the list provided by: 
+```bash
+ps aux
+```
+
+6. If you had enabled debug mode earlier. You can check the logs for the output
+
+```bash
+cat /var/log/upstart/rockbin.log
+```
