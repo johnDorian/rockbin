@@ -12,9 +12,15 @@ I decided to use a percentage value, in order to use a gauge in home assistant. 
 It's also possible to create sensor expressed in minutes - please refer to parameters table.
 
 
+## Contributing
+
+Feel free to make some changes (even write some unit tests) and create a PR. The main aim and scope of this project is to get the robot to report the bin status, so please keep this in mind when creating a PR. 
+
 ## Building for the vacuum
 
-Feel free to modify the code and build the binary yourself. You can build it on your computer rather than the vacuum using: 
+***Pre-built binaries are available in the releases.***
+
+You can build it on your computer rather than the vacuum using: 
 
 ```bash 
 GOARM=7 GOARCH=arm GOOS=linux go build 
