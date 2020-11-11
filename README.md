@@ -68,21 +68,41 @@ If your mqtt broker requires authentication, you can set the environment variabl
 
 ### Setting it up as an upstart service
 
-
+#### Pre 2008 firmware
 ```bash
 # put the binary in the correct folder
 cp .rockbin /usr/local/bin/
 # edit rockbin.conf and set proper parameters to rockbin command
 vi rockbin.conf
 # put the upstart config file into the correct file
-cp .rockbin.conf /etc/init/rockbin.conf
+cp .service_configuration/rockbin.conf /etc/init/rockbin.conf
 # reload the upstart configs
 initctl reload-configuration
 # start the service
 service rockbin start
-# On firmwares >2008 you will have to restart the vacuum
+# or just restart the vacuum
 sudo reboot now
 ```
+
+#### 2008 or above firmware
+_Please note this is currently untested, use at your own risk._
+
+```bash
+# put the binary in the correct folder
+cp .rockbin /usr/local/bin/
+# edit rockbin-daemon.sh and set proper parameters to rockbin command
+vi service_configuration/rockbin-daemon.sh
+# copy the startup scripts for the service
+cp .service_configuration/rockbin-daemon.sh /usr/local/bin/rockbin-daemon.sh
+cp .service_configuration/S12rockbin /etc/init/S12rockbin
+# Reboot the vacuum
+sudo reboot now
+```
+
+
+
+
+
 
 ## Home assistant 
 An example of sending the vacuum to the rubbish bin is below: 
