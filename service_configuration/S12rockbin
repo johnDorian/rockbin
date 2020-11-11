@@ -1,0 +1,46 @@
+#!/bin/sh
+
+###############################################
+## This file is copied from https://raw.githubusercontent.com/zvldz/vacuum/46ea4810d10e8b5bc4957c15e23981ebf708bbc9/custom-script/files/S11valetudo
+## Several modifications (commented below) have been made to the original file. 
+###############################################
+
+
+load() {
+    curtime=`cat /proc/uptime | awk -F ' ' '{print $1}'`
+    echo "[$curtime] start rockbin-daemon"
+    start-stop-daemon -S -b -q -m -p /var/run/rockbin-daemon.pid -x /usr/local/bin/rockbin-daemon.sh
+}
+
+unload() {
+    echo "stopping rockbin" >/dev/kmsg
+    start-stop-daemon -K -q -p /var/run/rockbin-daemon.pid
+    while killall rockbin 2>/dev/null; do sleep 1; done
+}
+
+status() {
+    if [ ! -f /var/run/rockbin-daemon.pid -o -z "$(ps | grep `cat /var/run/rockbin-daemon.pid` | grep -v grep)" ]; then
+        echo "rockbin seems stopped"
+    else
+        echo "rockbin seems started"
+    fi
+}
+
+case "$1" in
+    start)
+        load
+        ;;
+    stop)
+        unload
+        ;;
+    restart)
+        unload
+        load
+        ;;
+    status)
+        status
+        ;;
+    *)
+        echo "$0 <start/stop/restart/status>"
+        ;;
+esac
