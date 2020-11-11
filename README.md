@@ -99,11 +99,6 @@ cp .service_configuration/S12rockbin /etc/init/S12rockbin
 sudo reboot now
 ```
 
-
-
-
-
-
 ## Home assistant 
 An example of sending the vacuum to the rubbish bin is below: 
 
