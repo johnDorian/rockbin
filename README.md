@@ -87,6 +87,8 @@ sudo reboot now
 #### 2008 or above firmware
 _Please note this is currently untested, use at your own risk._
 
+These new files are based on the files used for [Valetudo](https://github.com/Hypfer/Valetudo) by the main [vacuum firmware builder](https://github.com/zvldz/vacuum), and was first suggested by [@Sennevds](https://github.com/Sennevds).
+
 ```bash
 # put the binary in the correct folder
 cp .rockbin /usr/local/bin/
@@ -208,3 +210,8 @@ cat /var/log/upstart/rockbin.log
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FjohnDorian%2Frockbin.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FjohnDorian%2Frockbin?ref=badge_large)
 
+
+
+| External Library | License | Use  |
+| ------------- |:-------------:| -----:|
+| https://github.com/zvldz/vacuum      | GPL-3.0 | Modified startup scripts |
