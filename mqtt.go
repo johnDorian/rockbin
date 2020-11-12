@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"os"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -21,8 +20,8 @@ type mqttConfig struct {
 	Client            mqtt.Client `json:"-"`
 }
 
-func (m *mqttConfig) Connect(uri *url.URL) {
-	opts := createClientOptions(m.Name, uri)
+func (m *mqttConfig) Connect(uri *url.URL, username string, password string) {
+	opts := createClientOptions(m.Name, uri, username, password)
 	client := mqtt.NewClient(opts)
 	token := client.Connect()
 	log.WithFields(log.Fields{"mqtt_broker": uri.Host}).Debug("Connecting to mqtt broker")
@@ -36,15 +35,15 @@ func (m *mqttConfig) Connect(uri *url.URL) {
 	m.Client = client
 }
 
-func createClientOptions(clientID string, uri *url.URL) *mqtt.ClientOptions {
+func createClientOptions(clientID string, uri *url.URL, username string, password string) *mqtt.ClientOptions {
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(fmt.Sprintf("tcp://%s", uri.Host))
 	opts.SetClientID(clientID)
-	if username := os.Getenv("MQTT_USERNAME"); len(username) > 0 {
+	if len(username) > 0 {
 		opts.SetUsername(username)
 		log.WithFields(log.Fields{"mqtt_username": username}).Debug("Found mqtt username")
 	}
-	if password := os.Getenv("MQTT_PASSWORD"); len(password) > 0 {
+	if len(password) > 0 {
 		opts.SetPassword(password)
 		log.Debug("Found mqtt password")
 	}
@@ -58,19 +57,19 @@ func (m *mqttConfig) SendConfig() error {
 		return err
 	}
 	log.Debug("Sending mqtt config")
-	err = sendMessage(m.Client, m.ConfigTopic, mqttPayload)
+	err = sendMessage(m.Client, m.ConfigTopic, mqttPayload, true)
 	return err
 }
 
 // Send any data to home assistant
 func (m *mqttConfig) Send(data string) error {
 	log.Debug("Sending mqtt message")
-	err := sendMessage(m.Client, m.StateTopic, data)
+	err := sendMessage(m.Client, m.StateTopic, data, false)
 	return err
 }
 
-func sendMessage(client mqtt.Client, topic string, data string) error {
-	token := client.Publish(topic, 0, false, data)
+func sendMessage(client mqtt.Client, topic string, data string, retain bool) error {
+	token := client.Publish(topic, 0, retain, data)
 	if token.Error() != nil {
 		log.Fatalln(token.Error())
 		return token.Error()
