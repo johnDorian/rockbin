@@ -20,8 +20,8 @@ func config() (Bin, mqttConfig) {
 	var FilePath string
 	var LoggingLevel string
 	flag.StringVar(&mqttServer, "mqtt_server", "mqtt://localhost:1883", "mqtt broker address")
-	flag.StringVar(&mqttUser, "mqtt_user", "", "mqtt user")
-	flag.StringVar(&mqttPassword, "mqtt_password", "", "mqtt password")
+	flag.StringVar(&mqttUser, "mqtt_user", lookUpEnv("MQTT_USER", ""), "mqtt user")
+	flag.StringVar(&mqttPassword, "mqtt_password", lookUpEnv("MQTT_PASSWORD", ""), "mqtt password")
 	flag.StringVar(&mqttStateTopic, "mqtt_state_topic", "homeassistant/sensor/%v/state", "State topic (%v is replaced with the sensor_name value)")
 	flag.StringVar(&sensorName, "sensor_name", "vacuumbin", "Name of sensor in Home Assistant")
 	flag.Float64Var(&binFullTime, "full_time", 2400., "Amount of seconds where the bin will be considered full")
@@ -70,4 +70,11 @@ func setUpLogger(level string) {
 	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
 	log.Info("Starting rockbin service")
 	log.WithFields(log.Fields{"loglevel": log.GetLevel()}).Debug("Setup logger with log level")
+}
+
+func lookUpEnv(variable, defaultVariable string) string {
+	if envVariable, ok := os.LookupEnv(variable); ok {
+		return envVariable
+	}
+	return defaultVariable
 }
