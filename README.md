@@ -78,7 +78,7 @@ If your mqtt broker requires authentication, you can set the environment variabl
 
 ### Setting it up as an upstart service
 
-_This is only valif for pre 2008 devices. Please see issue [#5](/johnDorian/rockbin/issues/5) for a work around_
+_This is only valif for pre 2008 devices. Please see issue [#5](https://github.com/johnDorian/rockbin/issues/5) for a work around_
 
 ```bash
 # put the binary in the correct folder
