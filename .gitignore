@@ -1,2 +1,3 @@
 rockbin
 dist/*
+.vscode/launch.json

@@ -47,6 +47,14 @@ You can pass usernames and passwords via the environment variables:
 ```bash
 MQTT_USERNAME=mrmqtt MQTT_PASSWORD=coolpass ./rockbin -mqtt_server mqtt://192.168.0.144:1883 -measurement_unit min
 ```
+or via config:
+```bash
+./rockbin -mqtt_server mqtt://192.168.0.144:1883 -mqtt_user mrmqtt -mqtt_password coolpass -measurement_unit min
+```
+The state topic could be changed by the mqtt_state_topic config (defaults to 'homeassistant/sensor/%v/state'. The %v is replaced with the sensor_name value):
+```bash
+./rockbin -mqtt_server mqtt://192.168.0.144:1883 -mqtt_user mrmqtt -mqtt_password coolpass -mqtt_state_topic 'rockbin/%v/state' -measurement_unit min
+```
 You can increase the logging level to help setting up connections using 
 ```bash
 ./rockbin -mqtt_server mqtt://192.168.0.144:1883 -measurement_unit min -log_level debug

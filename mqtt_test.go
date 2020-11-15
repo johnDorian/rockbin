@@ -41,9 +41,9 @@ func TestcreateClientOptions(t *testing.T) {
 			expected.SetPassword(test.password)
 		}
 
-		os.Setenv("MQTT_USERNAME", test.username)
-		os.Setenv("MQTT_PASSWORD", test.password)
-		opts := createClientOptions(test.clientID, uri)
+		// os.Setenv("MQTT_USERNAME", test.username)
+		// os.Setenv("MQTT_PASSWORD", test.password)
+		opts := createClientOptions(test.clientID, uri, test.username, test.password)
 		assert.Equal(expected, opts)
 	}
 
@@ -63,9 +63,9 @@ func TestConnect(t *testing.T) {
 	for _, up := range testData {
 		config := mqttConfig{Name: "hello", UnitOfMeasurement: "hello", StateTopic: "hello", ConfigTopic: "hello", UniqueID: "hello"}
 		uri, _ := url.Parse(fmt.Sprintf("mqtt://127.0.0.1:%v", resource.GetPort("1883/tcp")))
-		os.Setenv("MQTT_USERNAME", up.username)
-		os.Setenv("MQTT_PASSWORD", up.password)
-		config.Connect(uri)
+		// os.Setenv("MQTT_USERNAME", up.username)
+		// os.Setenv("MQTT_PASSWORD", up.password)
+		config.Connect(uri, up.username, up.password)
 		assert.True(config.Client.IsConnected())
 
 	}
