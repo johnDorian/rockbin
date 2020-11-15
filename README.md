@@ -70,12 +70,15 @@ You can increase the logging level to help setting up connections using
 |-measurement_unit|%|In what unit should the measurement be sent (%, sec, min)|
 |-file_path|/mnt/data/rockrobo/RoboController.cfg|file path of RoboController.cfg|
 |-log_level|Fatal|Level of logging (trace, debug, info, warn, error, fatal, panic).|
-
+|-mqtt_state_topic | homeassistant/sensor/%v/state | State topic (%v is replaced with the sensor_name value) |
+|-mqtt_user | "" |  | "" | mqtt user |
+|-mqtt_password | "" | mqtt password |
         
 If your mqtt broker requires authentication, you can set the environment variables (MQTT_USERNAME and MQTT_PASSWORD) in the `rockbin.conf` file. 
 
 ### Setting it up as an upstart service
 
+_This is only valif for pre 2008 devices. Please see issue [#5](johnDorian/rockbin/issues/5) for a work around_
 
 ```bash
 # put the binary in the correct folder
@@ -88,8 +91,6 @@ cp .rockbin.conf /etc/init/rockbin.conf
 initctl reload-configuration
 # start the service
 service rockbin start
-# On firmwares >2008 you will have to restart the vacuum
-sudo reboot now
 ```
 
 ## Home assistant 
