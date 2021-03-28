@@ -36,5 +36,5 @@ jobs:
           export GOROOT=/usr/local/go
           export GOPATH=$HOME/go
           export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-          go test ./... -coverprofile=coverage.txt -covermode=atomic
+          go test ./ -coverprofile=coverage.txt -covermode=atomic
           bash <(curl -s https://codecov.io/bash)
