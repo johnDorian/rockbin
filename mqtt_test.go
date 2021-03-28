@@ -59,10 +59,10 @@ func TestConnect(t *testing.T) {
 		{"user1", "!$%&/()?#+*12345"},
 		{"user2", `hello"world`},
 	}
-	//resource, pool := spinUpMQTT()
+	resource, pool := spinUpMQTT()
 	for _, up := range testData {
 		config := mqttConfig{Name: "hello", UnitOfMeasurement: "hello", StateTopic: "hello", ConfigTopic: "hello", UniqueID: "hello"}
-		uri, _ := url.Parse("mqtt://127.0.0.1:1883")
+		uri, _ := url.Parse(fmt.Sprintf("mqtt://127.0.0.1:%v", resource.GetPort("1883/tcp")))
 		// os.Setenv("MQTT_USERNAME", up.username)
 		// os.Setenv("MQTT_PASSWORD", up.password)
 		config.Connect(uri, up.username, up.password)
