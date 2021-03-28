@@ -62,9 +62,10 @@ func TestConnect(t *testing.T) {
 	resource, pool := spinUpMQTT()
 	for _, up := range testData {
 		config := mqttConfig{Name: "hello", UnitOfMeasurement: "hello", StateTopic: "hello", ConfigTopic: "hello", UniqueID: "hello"}
-		uri, _ := url.Parse(fmt.Sprintf("mqtt://127.0.0.1:%v", resource.GetPort("1883/tcp")))
+		uri, _ := url.Parse(fmt.Sprintf("mqtt://localhost:%v", resource.GetPort("1883/tcp")))
 		// os.Setenv("MQTT_USERNAME", up.username)
 		// os.Setenv("MQTT_PASSWORD", up.password)
+		log.Println("connecting")
 		config.Connect(uri, up.username, up.password)
 		assert.True(config.Client.IsConnected())
 
@@ -109,7 +110,7 @@ func spinUpMQTT() (*dockertest.Resource, *dockertest.Pool) {
 		log.Fatalf("Could not connect to docker: %s", err)
 	}
 	dir, _ := os.Getwd()
-
+	log.Println("Configuring options")
 	options := &dockertest.RunOptions{
 		Repository: "eclipse-mosquitto",
 		Tag:        "latest",
@@ -123,5 +124,6 @@ func spinUpMQTT() (*dockertest.Resource, *dockertest.Pool) {
 	if err != nil {
 		log.Fatalf("Could not start resource: %s", err)
 	}
+	log.Println("Up and running")
 	return resource, pool
 }
