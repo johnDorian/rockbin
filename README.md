@@ -45,7 +45,7 @@ If you'd like to have sensor expressed in minutes then use this configuration:
 ```
 You can pass usernames and passwords via the environment variables: 
 ```bash
-MQTT_USERNAME=mrmqtt MQTT_PASSWORD=coolpass ./rockbin -mqtt_server mqtt://192.168.0.144:1883 -measurement_unit min
+MQTT_USER=mrmqtt MQTT_PASSWORD=coolpass ./rockbin -mqtt_server mqtt://192.168.0.144:1883 -measurement_unit min
 ```
 or via config:
 ```bash
@@ -74,7 +74,7 @@ You can increase the logging level to help setting up connections using
 |-mqtt_user | "" |  | "" | mqtt user |
 |-mqtt_password | "" | mqtt password |
         
-If your mqtt broker requires authentication, you can set the environment variables (MQTT_USERNAME and MQTT_PASSWORD) in the `rockbin.conf` file. 
+If your mqtt broker requires authentication, you can set the environment variables (MQTT_USER and MQTT_PASSWORD) in the `rockbin.conf` file. 
 
 ### Setting it up as an upstart service
 
@@ -154,7 +154,7 @@ rockbin -mqtt_server mqtt://192.168.0.144:1883 -log_level debug
 
 If you require a username and password to connect to the mqtt_server, you can pass these using: 
 ```bash
-MQTT_USERNAME=mqttuser MQTT_PASSWORD='Some%!Strong$Pass' rockbin -mqtt_server mqtt://192.168.0.144:1883 -log_level debug
+MQTT_USER=mqttuser MQTT_PASSWORD='Some%!Strong$Pass' rockbin -mqtt_server mqtt://192.168.0.144:1883 -log_level debug
 ```
 
 3. If the above works correctly, you will need to update [rockbin.conf](rockbin.conf) accordingly. If you're using authentication a sample of the required [rockbin.conf](rockbin.conf) would look like 
@@ -168,7 +168,7 @@ umask 022
 setuid root
 setgid root
 console log
-env MQTT_USERNAME=mqttuser
+env MQTT_USER=mqttuser
 env MQTT_PASSWORD='Some%!Strong$Pass'
 script 
     exec /usr/local/bin/rockbin -mqtt_server mqtt://192.168.0.144:1883 -full_time 2400
@@ -177,7 +177,7 @@ end script
 
 If you don't require a username or password, then leave these commented out.  
 ```text
-#env MQTT_USERNAME=mqttuser
+#env MQTT_USER=mqttuser
 #env MQTT_PASSWORD='Some%!Strong$Pass'
 ```
 
