@@ -10,6 +10,15 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    services:
+      mosquitto:
+        image: eclipse-mosquitto:latest
+        ports: 
+          - 1883:1883
+        volumes:
+          - "tests/mosquitto.conf:/mosquitto/config/mosquitto.conf"
+          - "tests/password.txt:/password.txt"
+
     steps:
     - uses: actions/checkout@v2
 
