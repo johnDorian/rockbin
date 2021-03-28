@@ -1,0 +1,44 @@
+name: Go
+
+on:
+  push:
+    tags-ignore:
+      - '*'
+  pull_request:
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Install Task
+      run: sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d
+
+    - name: Build
+      run: ./bin/task build
+
+    - name: Test
+      run: ./bin/task test -- -coverprofile=coverage.txt -covermode=atomic
+    
+    - name: Upload code coverage
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.txt
+    
+    - name: Run Gosec Security Scanner
+      uses: securego/gosec@master
+      with:
+        args: '-no-fail -fmt sarif -out results.sarif ./...'
+  
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: results.sarif
