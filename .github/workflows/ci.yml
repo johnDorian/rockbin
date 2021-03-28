@@ -2,8 +2,6 @@ name: Go
 
 on:
   push:
-    tags-ignore:
-      - '*'
   pull_request:
 
 jobs:
