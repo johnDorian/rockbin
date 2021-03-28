@@ -11,11 +11,7 @@ jobs:
     services:
       mosquitto:
         image: eclipse-mosquitto:latest
-        ports: 
-          - 1883:1883
-        volumes:
-          - tests/mosquitto.conf:/mosquitto/config/mosquitto.conf
-          - tests/password.txt:/password.txt
+        options: -p 1883:1883 -v options: -v ${{ github.workspace }}/tests/mosquitto.conf:/mosquitto/config/mosquitto.conf -v ${{ github.workspace }}/tests/password.txt:/password.txt
 
     steps:
     - uses: actions/checkout@v2
