@@ -64,10 +64,10 @@ func TestConnect(t *testing.T) {
 	ip_address := resource.Container.NetworkSettings.IPAddress
 	log.Println(ip_address)
 	log.Println(resource.GetPort("1883/tcp"))
-	time.Sleep(10 * time.Minute)
+	time.Sleep(1 * time.Minute)
 	for _, up := range testData {
 		config := mqttConfig{Name: "hello", UnitOfMeasurement: "hello", StateTopic: "hello", ConfigTopic: "hello", UniqueID: "hello"}
-		uri, _ := url.Parse(fmt.Sprintf("mqtt://%v:%v", ip_address, resource.GetPort("1883/tcp")))
+		uri, _ := url.Parse(fmt.Sprintf("mqtt://localhost:%v", ip_address, resource.GetPort("1883/tcp")))
 		//uri, _ := url.Parse("mqtt://localhost:1883")
 		// os.Setenv("MQTT_USERNAME", up.username)
 		// os.Setenv("MQTT_PASSWORD", up.password)
