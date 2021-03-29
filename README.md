@@ -1,6 +1,8 @@
 # rockbin
 
-[![johnDorian](https://circleci.com/gh/johnDorian/rockbin.svg?style=shield)](https://circleci.com/gh/johnDorian/rockbin) [![codecov](https://codecov.io/gh/johnDorian/rockbin/branch/master/graph/badge.svg)](https://codecov.io/gh/johnDorian/rockbin)
+[![building](https://github.com/johnDorian/rockbin/actions/workflows/ci.yml/badge.svg)]((https://github.com/johnDorian/rockbin/actions/workflows/ci.yml/badge.svg))
+[![codecov](https://codecov.io/gh/johnDorian/rockbin/branch/master/graph/badge.svg)](https://codecov.io/gh/johnDorian/rockbin)
+[![gosec](https://goreportcard.com/badge/github.com/johnDorian/rockbin)]((https://goreportcard.com/badge/github.com/johnDorian/rockbin))
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FjohnDorian%2Frockbin.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FjohnDorian%2Frockbin?ref=badge_shield)
 
 This repo contains the code for a simple go based mqtt client which will send the bin status to a mqtt server. 
@@ -198,7 +200,4 @@ ps aux
 ```bash
 cat /var/log/upstart/rockbin.log
 ```
-
-## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FjohnDorian%2Frockbin.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FjohnDorian%2Frockbin?ref=badge_large)
 
