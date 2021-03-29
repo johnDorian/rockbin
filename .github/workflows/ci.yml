@@ -5,9 +5,12 @@ on:
   pull_request:
 
 
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: 
+      image: eclipse-mosquitto:latest
     steps:
     - uses: actions/checkout@v2
 
