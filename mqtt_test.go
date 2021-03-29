@@ -7,7 +7,6 @@ import (
 	"os"
 	"path"
 	"testing"
-	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/ory/dockertest/v3"
@@ -61,13 +60,10 @@ func TestConnect(t *testing.T) {
 		{"user2", `hello"world`},
 	}
 	resource, pool := spinUpMQTT()
-	ip_address := resource.Container.NetworkSettings.IPAddress
-	log.Println(ip_address)
 	log.Println(resource.GetPort("1883/tcp"))
-	time.Sleep(1 * time.Minute)
 	for _, up := range testData {
 		config := mqttConfig{Name: "hello", UnitOfMeasurement: "hello", StateTopic: "hello", ConfigTopic: "hello", UniqueID: "hello"}
-		uri, _ := url.Parse(fmt.Sprintf("mqtt://localhost:%v", ip_address, resource.GetPort("1883/tcp")))
+		uri, _ := url.Parse(fmt.Sprintf("mqtt://localhost:%v", resource.GetPort("1883/tcp")))
 		//uri, _ := url.Parse("mqtt://localhost:1883")
 		// os.Setenv("MQTT_USERNAME", up.username)
 		// os.Setenv("MQTT_PASSWORD", up.password)
