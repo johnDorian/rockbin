@@ -63,6 +63,7 @@ func TestConnect(t *testing.T) {
 	resource, pool := spinUpMQTT()
 	ip_address := resource.Container.NetworkSettings.IPAddress
 	log.Println(ip_address)
+	log.Println(resource.GetPort("1883/tcp"))
 	time.Sleep(10 * time.Minute)
 	for _, up := range testData {
 		config := mqttConfig{Name: "hello", UnitOfMeasurement: "hello", StateTopic: "hello", ConfigTopic: "hello", UniqueID: "hello"}
@@ -117,10 +118,10 @@ func spinUpMQTT() (*dockertest.Resource, *dockertest.Pool) {
 	dir, _ := os.Getwd()
 	log.Println("Configuring options")
 	options := &dockertest.RunOptions{
-		Repository: "eclipse-mosquitto",
-		Tag:        "latest",
-
-		ExposedPorts: []string{"1883"},
+		Repository:   "eclipse-mosquitto",
+		Tag:          "latest",
+		Name:         "mosquitto",
+		ExposedPorts: []string{"1883", "9001"},
 		Mounts: []string{fmt.Sprintf("%v:/mosquitto/config/mosquitto.conf", path.Join(dir, "tests/mosquitto.conf")),
 			fmt.Sprintf("%v:/password.txt", path.Join(dir, "tests/password.txt"))},
 	}
