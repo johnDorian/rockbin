@@ -8,9 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: eclipse-mosquitto:latest
-      options: -v test/:/zap/wrk/:rw
     steps:
     - uses: actions/checkout@v2
 
@@ -24,7 +21,7 @@ jobs:
 
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
-      
+
     - name: Build
       run: ./bin/task build
 
