@@ -20,9 +20,6 @@ jobs:
     - name: Install Task
       run: sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d
 
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-
     - name: Build
       run: ./bin/task build
 
