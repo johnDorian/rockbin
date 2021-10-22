@@ -80,7 +80,7 @@ If your mqtt broker requires authentication, you can set the environment variabl
 
 ### Setting it up as an upstart service
 
-_This is only valif for pre 2008 devices. Please see issue [#5](https://github.com/johnDorian/rockbin/issues/5) for a work around_
+_This is only valid for pre 2008 devices. Please see issue [#5](https://github.com/johnDorian/rockbin/issues/5) for a work around_
 
 ```bash
 # put the binary in the correct folder
@@ -94,6 +94,38 @@ initctl reload-configuration
 # start the service
 service rockbin start
 ```
+
+_Please see issue [#5](https://github.com/johnDorian/rockbin/issues/5) for a work around_
+
+```bash
+# put the binary in the correct folder
+# on host and copy it to the vacuum and make it executable.
+# on host
+# all line endings need to be LF!!!
+scp ./rockbin root@xxx.xxx.xxx.xxx:/usr/local/bin/rockbin
+# as alternative on vacuum
+cd /usr/local/bin/rockbin
+wget https://github.com/johnDorian/rockbin/releases/download/v0.1.3/rockbin
+
+# on vacuum make executable
+chmod +x /usr/local/bin/rockbin
+
+# Edit rockbin-daemon.sh and set proper parameters to rockbin command
+# Copy rockbin-daemon.sh to /usr/local/bin/rockbin-daemon.sh and make it executable.
+# on host
+scp ./rockbin-daemon.sh root@IP:/usr/local/bin/rockbin-daemon.sh
+# on vacuum make executable
+chmod +x /usr/local/bin/rockbin-daemon.sh
+
+# Copy S12rockbin to /etc/init/ and make it executable.
+scp ./S12rockbin root@IP:/etc/init/S12rockbin
+# on vacuum make executable
+chmod +x /etc/init/S12rockbin
+
+# Reboot
+reboot
+```
+
 
 ## Home assistant 
 An example of sending the vacuum to the rubbish bin is below: 
@@ -121,9 +153,9 @@ An example of sending the vacuum to the rubbish bin is below:
       continue_on_timeout: 'true'
       timeout: 00:00:05
     - service: mqtt.publish
-      data: 
-        topic: valetudo/rockrobo/custom_command
-        payload: "{\"command\":\"go_to\", \"spot_id\":\"bin\"}"
+      data: # Valid for Valetudo 2021.10.0
+        topic: valetudo/rockrobo/GoToLocationCapability/go/set 
+        payload: "GoTo ID goes inhere"
     - service: notify.telegram_user
       data:
         message: "Please empty the vacuum"
