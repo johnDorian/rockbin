@@ -95,7 +95,7 @@ initctl reload-configuration
 service rockbin start
 ```
 
-_Please see issue [#5](https://github.com/johnDorian/rockbin/issues/5) for a work around_
+_This is the workaround as described in issue [#5](https://github.com/johnDorian/rockbin/issues/5)_
 
 ```bash
 # put the binary in the correct folder
@@ -104,8 +104,7 @@ _Please see issue [#5](https://github.com/johnDorian/rockbin/issues/5) for a wor
 # all line endings need to be LF!!!
 scp ./rockbin root@xxx.xxx.xxx.xxx:/usr/local/bin/rockbin
 # as alternative on vacuum
-cd /usr/local/bin/rockbin
-wget https://github.com/johnDorian/rockbin/releases/download/v0.1.3/rockbin
+wget https://github.com/johnDorian/rockbin/releases/download/v0.1.3/rockbin -P /usr/local/bin/
 
 # on vacuum make executable
 chmod +x /usr/local/bin/rockbin
@@ -147,8 +146,8 @@ An example of sending the vacuum to the rubbish bin is below:
     action: 
     - service: mqtt.publish
       data: 
-        topic: valetudo/rockrobo/command
-        payload: "pause"
+        topic: valetudo/rockrobo/BasicControlCapability/operation/set
+        payload: "PAUSE"
     - wait_template: '{{ is_state(''vacuum.rockrobo'', ''idle'') }}'
       continue_on_timeout: 'true'
       timeout: 00:00:05
