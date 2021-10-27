@@ -1,4 +1,4 @@
-package main
+package mqtt
 
 import (
 	"encoding/json"
@@ -11,7 +11,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-type mqttConfig struct {
+type MqttConfig struct {
 	Name              string      `json:"name"`
 	UnitOfMeasurement string      `json:"unit_of_measurement"`
 	StateTopic        string      `json:"state_topic"`
@@ -20,7 +20,7 @@ type mqttConfig struct {
 	Client            mqtt.Client `json:"-"`
 }
 
-func (m *mqttConfig) Connect(uri *url.URL, username string, password string) {
+func (m *MqttConfig) Connect(uri *url.URL, username string, password string) {
 	opts := createClientOptions(m.Name, uri, username, password)
 	client := mqtt.NewClient(opts)
 	token := client.Connect()
@@ -51,7 +51,7 @@ func createClientOptions(clientID string, uri *url.URL, username string, passwor
 }
 
 // SendConfig send the home assistant auto discovery config to mqtt
-func (m *mqttConfig) SendConfig() error {
+func (m *MqttConfig) SendConfig() error {
 	mqttPayload, err := preparePayload(m)
 	if err != nil {
 		return err
@@ -62,7 +62,7 @@ func (m *mqttConfig) SendConfig() error {
 }
 
 // Send any data to home assistant
-func (m *mqttConfig) Send(data string) error {
+func (m *MqttConfig) Send(data string) error {
 	log.Debug("Sending mqtt message")
 	err := sendMessage(m.Client, m.StateTopic, data, false)
 	return err

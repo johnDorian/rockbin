@@ -1,3 +1,6 @@
+bin/*
 rockbin
 dist/*
 .vscode/launch.json
+tests/S12Rockbin
+tests/rockbin.yaml

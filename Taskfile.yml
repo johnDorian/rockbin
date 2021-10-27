@@ -1,12 +1,30 @@
 version: 3
 
 tasks:
-  build: 
+  build_local: 
     cmds:
       - go build .
+  
+  build_vacuum: 
+    cmds:
+      - go build .
+    env:
+      GOOS: linux
+      GOARCH: arm
+      GOARM: 7
+  
   snapshot: 
     cmds:
       - goreleaser --snapshot
+  
   test:
     cmds: 
-      - go test -v ./ {{.CLI_ARGS}}
+      - go test -v ./mqtt/ ./vacuum/ {{.CLI_ARGS}}
+  
+  start_mqtt:
+    cmds:
+      - 'docker run -d 
+        -p 1883:1883 
+        -v $(pwd)/tests/mosquitto.conf:/mosquitto/config/mosquitto.conf 
+        -v $(pwd)/tests/password.txt:/password.txt 
+        eclipse-mosquitto:2.0.9'

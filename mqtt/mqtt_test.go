@@ -1,4 +1,4 @@
-package main
+package mqtt
 
 import (
 	"fmt"
@@ -61,11 +61,8 @@ func TestConnect(t *testing.T) {
 	}
 	resource, pool := spinUpMQTT()
 	for _, up := range testData {
-		config := mqttConfig{Name: "hello", UnitOfMeasurement: "hello", StateTopic: "hello", ConfigTopic: "hello", UniqueID: "hello"}
+		config := MqttConfig{Name: "hello", UnitOfMeasurement: "hello", StateTopic: "hello", ConfigTopic: "hello", UniqueID: "hello"}
 		uri, _ := url.Parse(fmt.Sprintf("mqtt://localhost:%v", resource.GetPort("1883/tcp")))
-		//uri, _ := url.Parse("mqtt://localhost:1883")
-		// os.Setenv("MQTT_USERNAME", up.username)
-		// os.Setenv("MQTT_PASSWORD", up.password)
 		config.Connect(uri, up.username, up.password)
 		assert.True(config.Client.IsConnected())
 
@@ -75,7 +72,7 @@ func TestConnect(t *testing.T) {
 
 }
 
-func TestpreparePayload(t *testing.T) {
+func TestPreparePayload(t *testing.T) {
 	assert := assert.New(t)
 	var TestData = []struct {
 		item1       string
@@ -115,8 +112,8 @@ func spinUpMQTT() (*dockertest.Resource, *dockertest.Pool) {
 		Tag:          "2.0.9",
 		Name:         "mosquitto",
 		ExposedPorts: []string{"1883", "9001"},
-		Mounts: []string{fmt.Sprintf("%v:/mosquitto/config/mosquitto.conf", path.Join(dir, "tests/mosquitto.conf")),
-			fmt.Sprintf("%v:/password.txt", path.Join(dir, "tests/password.txt"))},
+		Mounts: []string{fmt.Sprintf("%v:/mosquitto/config/mosquitto.conf", path.Join(dir, "../tests/mosquitto.conf")),
+			fmt.Sprintf("%v:/password.txt", path.Join(dir, "../tests/password.txt"))},
 	}
 
 	resource, err := pool.RunWithOptions(options)
