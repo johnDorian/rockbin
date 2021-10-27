@@ -14,14 +14,11 @@ var cfgFile string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "rockbin",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {},
+	Short: "Send bin capacity to a mqtt server",
+	Long: `This app is designed to let you periodically send 
+the bin capacity (as time or a percentage) to a mqtt server.`,
+	Version: "v0.2.0rc",
+	Run:     func(cmd *cobra.Command, args []string) {},
 }
 
 func Execute() {
@@ -32,7 +29,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is /mnt/data/rockbin/rockbin.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "/mnt/data/rockbin/rockbin.yaml", "config file")
 
 }
 

@@ -16,7 +16,7 @@ func Serve(bin Bin, mqttClient mqtt.MqttConfig) {
 	// every minute send everything to the mqtt broker
 	c := cron.New()
 	c.AddFunc("@every 0h1m0s", func() {
-
+		log.Debug("Running cron job")
 		mqttClient.SendConfig()
 		bin.Update()
 		mqttClient.Send(bin.Value)
@@ -41,6 +41,7 @@ func Serve(bin Bin, mqttClient mqtt.MqttConfig) {
 				time.Sleep(time.Second * 1)
 
 				bin.Update()
+				log.Debug("Current bin value is:", bin.Value)
 				mqttClient.Send(bin.Value)
 			case err := <-watcher.Errors:
 				log.Fatalln(err)

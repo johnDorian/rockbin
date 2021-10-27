@@ -117,6 +117,7 @@ func (p *CLIVariables) WriteOutTemplate(file string, data interface{}) error {
 		tmplFile = path.Join("templates", fmt.Sprintf("%s.%s", path.Base(p.ServiceFile), "tmpl"))
 		outputFile = p.ServiceFile
 	}
+	fmt.Printf("Writing %s file to: %s\n", file, outputFile)
 	t, err := template.ParseFS(templateFiles, tmplFile)
 	if err != nil {
 		return err
@@ -131,8 +132,6 @@ func (p *CLIVariables) WriteOutTemplate(file string, data interface{}) error {
 	defer f.Close()
 
 	err = t.Execute(f, data)
-
-	fmt.Printf("Writing %s file to: %s\n", file, outputFile)
 
 	return err
 

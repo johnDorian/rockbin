@@ -7,5 +7,5 @@ setuid root
 setgid root
 console log
 script 
-    exec /usr/local/bin/rockbin serve --config {{.}}
+    /usr/local/bin/rockbin serve --config {{.}}
 end script
