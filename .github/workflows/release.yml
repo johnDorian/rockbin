@@ -21,7 +21,7 @@ jobs:
         run: sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d
 
       - name: Build
-        run: ./bin/task build
+        run: ./bin/task build_local
 
       - name: Test
         run: ./bin/task test -- -coverprofile=coverage.txt -covermode=atomic
