@@ -10,7 +10,11 @@ builds:
       - arm
     goarm: 
       - 7
-prerelease: auto
+
+release:
+  prerelease: auto
+  draft: true
+
 archives:
   -
     format: binary
