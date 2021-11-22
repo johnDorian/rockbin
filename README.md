@@ -27,6 +27,8 @@ You can build it on your computer rather than the vacuum using:
 
 ```bash 
 GOARM=7 GOARCH=arm GOOS=linux go build 
+# or use taskfile:
+task build_vacuum
 ```
 
 ## Config

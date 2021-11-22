@@ -10,6 +10,7 @@ import (
 )
 
 var cfgFile string
+var version = "v0.2.0rc2"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -17,7 +18,7 @@ var rootCmd = &cobra.Command{
 	Short: "Send bin capacity to a mqtt server",
 	Long: `This app is designed to let you periodically send 
 the bin capacity (as time or a percentage) to a mqtt server.`,
-	Version: "v0.2.0rc",
+	Version: version,
 	Run:     func(cmd *cobra.Command, args []string) {},
 }
 
