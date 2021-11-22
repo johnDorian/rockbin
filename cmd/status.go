@@ -41,8 +41,13 @@ var statusCmd = &cobra.Command{
 
 		stats := status.Data{}
 		json.NewDecoder(resp.Body).Decode(&stats)
-		fmt.Println(stats.Version)
-		fmt.Println(stats.Uptime)
+
+		prettyOutput, err := json.MarshalIndent(stats, "", "  ")
+		if err != nil {
+			log.Fatalln("Error formatting response", err)
+		}
+		fmt.Println(string(prettyOutput))
+
 	},
 }
 
