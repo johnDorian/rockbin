@@ -24,7 +24,7 @@ get_pid() {
 }
 
 is_running() {
-    [ -f "$pid_file" ] && $cmd status --config {{.}} > /dev/null 2>&1
+    [ -f "$pid_file" ] && [ -e /proc/$(get_pid)/status ] > /dev/null 2>&1
 }
 
 case "$1" in
@@ -32,6 +32,10 @@ case "$1" in
     if is_running; then
         echo "Already started"
     else
+        while [ "$(cat /proc/uptime | awk '{print int($1)}')" -lt 30 ]; 
+        do
+            sleep 1
+        done
         echo "Starting $name"
         $cmd serve --config {{.}} >> "$stdout_log" 2>> "$stderr_log" &
         echo $! > "$pid_file"

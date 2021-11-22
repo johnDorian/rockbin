@@ -7,5 +7,9 @@ setuid root
 setgid root
 console log
 script 
+    while [ "$(cat /proc/uptime | awk '{print int($1)}')" -lt 30 ]; 
+    do
+        sleep 1
+    done
     /usr/local/bin/rockbin serve --config {{.}}
 end script
