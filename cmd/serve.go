@@ -3,8 +3,10 @@ package cmd
 import (
 	"fmt"
 	"net/url"
+	"time"
 
 	"github.com/johnDorian/rockbin/mqtt"
+	"github.com/johnDorian/rockbin/status"
 	"github.com/johnDorian/rockbin/vacuum"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -21,6 +23,8 @@ the mqtt server.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		setUpLogger(viper.GetString("log_level"))
+
+		startTime := time.Now()
 
 		bin := vacuum.Bin{
 			FilePath: viper.GetString("file_path"),
@@ -41,6 +45,10 @@ the mqtt server.`,
 			UniqueID:          viper.GetString("sensor_name"),
 		}
 		mqttClient.Connect(mqttURL, viper.GetString("mqtt_user"), viper.GetString("mqtt_password"))
+
+		statusServer := status.New(viper.GetString("status_address"), viper.GetString("status_port"), version, startTime)
+		statusServer.Serve()
+
 		vacuum.Serve(bin, mqttClient)
 	},
 }
@@ -56,6 +64,8 @@ func init() {
 	serveCmd.Flags().String("measurement_unit", "%", "In what unit should the measurement be sent (%, sec, min)")
 	serveCmd.Flags().String("file_path", "/mnt/data/rockrobo/RoboController.cfg", "File path of RoboController.cfg")
 	serveCmd.Flags().String("log_level", "Fatal", "Level of logging (trace, debug, info, warn, error, fatal, panic).")
+	serveCmd.Flags().String("status_address", "127.0.0.1", "Address of status host (Use 0.0.0.0 to allow access from outside the vac).")
+	serveCmd.Flags().String("status_port", "9999", "Port to use for the web service")
 
 }
 
