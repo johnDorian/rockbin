@@ -66,6 +66,7 @@ func init() {
 	serveCmd.Flags().String("log_level", "Fatal", "Level of logging (trace, debug, info, warn, error, fatal, panic).")
 	serveCmd.Flags().String("status_address", "127.0.0.1", "Address of status host (Use 0.0.0.0 to allow access from outside the vac).")
 	serveCmd.Flags().String("status_port", "9999", "Port to use for the web service")
+	viper.GetViper().BindPFlags(serveCmd.Flags())
 
 }
 

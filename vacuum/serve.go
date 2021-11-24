@@ -24,7 +24,7 @@ func Serve(bin Bin, mqttClient mqtt.MqttConfig) {
 	c.Start()
 
 	// Setup a file watcher to get instance updates on file changes
-	log.Debug("Setting up file watcher")
+	log.Debug("Setting up file watcher for: ", bin.FilePath)
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Println(err)

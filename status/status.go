@@ -42,8 +42,11 @@ func (s *Status) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (s *Status) Serve() {
 	mux := http.NewServeMux()
 	mux.Handle("/status", s)
-	err := http.ListenAndServe(net.JoinHostPort(s.Host, s.Port), mux)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	log.Debug("Starting status server on: ", net.JoinHostPort(s.Host, s.Port))
+	go func() {
+		err := http.ListenAndServe(net.JoinHostPort(s.Host, s.Port), mux)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}()
 }
