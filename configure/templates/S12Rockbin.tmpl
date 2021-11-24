@@ -12,7 +12,7 @@
 # This script is taken from https://github.com/fhd/init-script-template
 
 # Use "quotes" if user or password contains special chars.
-cmd="/usr/local/bin/rockbin"
+cmd="/usr/local/bin/rockbin serve --config {{.}}"
 
 name=`basename $0`
 pid_file="/var/run/$name.pid"
@@ -32,12 +32,8 @@ case "$1" in
     if is_running; then
         echo "Already started"
     else
-        while [ "$(cat /proc/uptime | awk '{print int($1)}')" -lt 30 ]; 
-        do
-            sleep 1
-        done
         echo "Starting $name"
-        $cmd serve --config {{.}} >> "$stdout_log" 2>> "$stderr_log" &
+        $cmd >> "$stdout_log" 2>> "$stderr_log" &
         echo $! > "$pid_file"
         if ! is_running; then
             echo "Unable to start, see $stdout_log and $stderr_log"
