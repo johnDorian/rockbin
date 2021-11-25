@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/cenkalti/backoff/v4"
 	log "github.com/sirupsen/logrus"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -15,39 +16,63 @@ type MqttConfig struct {
 	Name              string      `json:"name"`
 	UnitOfMeasurement string      `json:"unit_of_measurement"`
 	StateTopic        string      `json:"state_topic"`
-	ConfigTopic       string      `json:"-"`
 	UniqueID          string      `json:"unique_id"`
+	MaxConnectionTime int         `json:"-"`
 	Client            mqtt.Client `json:"-"`
+	ConfigTopic       string      `json:"-"`
+	Server            string      `json:"-"`
+	Username          string      `json:"-"`
+	Password          string      `json:"-"`
 }
 
-func (m *MqttConfig) Connect(uri *url.URL, username string, password string) {
-	opts := createClientOptions(m.Name, uri, username, password)
+func (m *MqttConfig) ConnectWithBackoff() error {
+	connectionBackoff := backoff.NewExponentialBackOff()
+	connectionBackoff.InitialInterval = 1 * time.Second
+	connectionBackoff.MaxElapsedTime = time.Duration(m.MaxConnectionTime) * time.Second
+	err := backoff.RetryNotifyWithTimer(m.Connect,
+		connectionBackoff,
+		func(e error, d time.Duration) {
+			log.Debug("mqtt connection attempt failed. Trying again in ", d.String())
+		},
+		nil,
+	)
+	if err != nil {
+		return fmt.Errorf("mqtt connection to: %s failed after trying for %s seconds", m.Server, connectionBackoff.MaxElapsedTime)
+	}
+	return nil
+}
+
+func (m *MqttConfig) Connect() error {
+	mqttURL, err := url.Parse(m.Server)
+	if err != nil {
+		return err
+	}
+
+	opts := mqtt.NewClientOptions()
+	opts.AddBroker(fmt.Sprintf("tcp://%s", mqttURL.Host))
+	opts.SetClientID(m.UniqueID)
+	if len(m.Username) > 0 {
+		opts.SetUsername(m.Username)
+	}
+	if len(m.Password) > 0 {
+		opts.SetPassword(m.Password)
+	}
+
 	client := mqtt.NewClient(opts)
+
 	token := client.Connect()
-	log.WithFields(log.Fields{"mqtt_broker": uri.Host}).Debug("Connecting to mqtt broker")
-	for !token.WaitTimeout(10 * time.Second) {
+	for !token.WaitTimeout(2 * time.Second) {
 	}
 
 	if err := token.Error(); err != nil {
-		log.Fatalln(err)
+		return err
 	}
-	log.WithFields(log.Fields{"mqtt_broker": uri.Host}).Info("Connected to mqtt broker")
-	m.Client = client
-}
+	if client.IsConnected() {
+		log.WithFields(log.Fields{"mqtt_broker": mqttURL.Host}).Info("Connected to mqtt broker")
+	}
 
-func createClientOptions(clientID string, uri *url.URL, username string, password string) *mqtt.ClientOptions {
-	opts := mqtt.NewClientOptions()
-	opts.AddBroker(fmt.Sprintf("tcp://%s", uri.Host))
-	opts.SetClientID(clientID)
-	if len(username) > 0 {
-		opts.SetUsername(username)
-		log.WithFields(log.Fields{"mqtt_username": username}).Debug("Found mqtt username")
-	}
-	if len(password) > 0 {
-		opts.SetPassword(password)
-		log.Debug("Found mqtt password")
-	}
-	return opts
+	m.Client = client
+	return nil
 }
 
 // SendConfig send the home assistant auto discovery config to mqtt
