@@ -21,10 +21,17 @@ tasks:
     cmds: 
       - go test -v ./mqtt/ ./vacuum/ {{.CLI_ARGS}}
   
-  start_mqtt:
+  mqtt_start:
     cmds:
-      - 'docker run -d 
+      - 'docker run -d --rm
         -p 1883:1883 
+        --name mqtt_server
         -v $(pwd)/tests/mosquitto.conf:/mosquitto/config/mosquitto.conf 
         -v $(pwd)/tests/password.txt:/password.txt 
         eclipse-mosquitto:2.0.9'
+  mqtt_stop:
+    cmds:
+      - docker stop {{.MQTT_ID}}
+    vars:
+      MQTT_ID:
+        sh: docker ps --filter name=mqtt_server --format {{"{{.ID}}"}}
