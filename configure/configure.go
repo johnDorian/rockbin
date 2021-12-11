@@ -123,7 +123,7 @@ func (p *CLIVariables) WriteOutTemplate(file string, data interface{}) error {
 		return err
 	}
 
-	os.MkdirAll(path.Dir(outputFile), 0744)
+	os.MkdirAll(path.Dir(outputFile), 0755)
 
 	f, err := os.Create(outputFile)
 	if err != nil {
