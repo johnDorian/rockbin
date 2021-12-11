@@ -1,0 +1,10 @@
+ 
+file_path: "./tests/RoboController.cfg" 
+full_time: "2400" 
+log_level: "DEBUG" 
+measurement_unit: "%" 
+mqtt_password: "pass" 
+mqtt_server: "mqtt://localhost:1883" 
+mqtt_state_topic: "homeassistant/sensor/%v/state" 
+mqtt_user: "user" 
+sensor_name: "vacuumbin"

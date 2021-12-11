@@ -1,4 +1,4 @@
-package main
+package vacuum
 
 import (
 	"testing"
@@ -10,7 +10,7 @@ func TestBinUpdate(t *testing.T) {
 	assert := assert.New(t)
 
 	b := Bin{
-		FilePath: `tests/RoboController.cfg`,
+		FilePath: `../tests/RoboController.cfg`,
 		Capacity: 3600.,
 	}
 
@@ -33,7 +33,7 @@ func TestConvert(t *testing.T) {
 
 	for _, test := range tests {
 		b := Bin{
-			FilePath: `tests/RoboController.cfg`,
+			FilePath: `../tests/RoboController.cfg`,
 			Capacity: test.capacity,
 			Unit:     test.unit,
 		}

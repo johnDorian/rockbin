@@ -2,7 +2,10 @@ name: Go
 
 on:
   push:
+    tags-ignore:
+      - "*"
   pull_request:
+
 
 
 
@@ -21,7 +24,7 @@ jobs:
       run: sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d
 
     - name: Build
-      run: ./bin/task build
+      run: ./bin/task build_local
 
     - name: Test debugging
       run: ./bin/task test

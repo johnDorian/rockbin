@@ -17,83 +17,32 @@ It's also possible to create sensor expressed in minutes - please refer to param
 
 ## Contributing
 
-Feel free to make some changes (even write some unit tests) and create a PR. The main aim and scope of this project is to get the robot to report the bin status, so please keep this in mind when creating a PR. 
-
-## Building for the vacuum
-
-***Pre-built binaries are available in the releases.***
-
-You can build it on your computer rather than the vacuum using: 
-
-```bash 
-GOARM=7 GOARCH=arm GOOS=linux go build 
-```
-
-## Config
-
-You will need to change the address of the mqtt broker and the amount of seconds which is considered to indicate the full capacity of the bin in the rockbin.conf file.
-
-## Install
-
-The client can be started/tested using the following command. 
-
-If you'd like to have sensor expressed in % where 40mins (40*60 = 2400) is 100% then use this configuration:
-```bash
-./rockbin -mqtt_server mqtt://192.168.0.144:1883 -full_time 2400
-```
-If you'd like to have sensor expressed in minutes then use this configuration:
-```bash
-./rockbin -mqtt_server mqtt://192.168.0.144:1883 -measurement_unit min
-```
-You can pass usernames and passwords via the environment variables: 
-```bash
-MQTT_USER=mrmqtt MQTT_PASSWORD=coolpass ./rockbin -mqtt_server mqtt://192.168.0.144:1883 -measurement_unit min
-```
-or via config:
-```bash
-./rockbin -mqtt_server mqtt://192.168.0.144:1883 -mqtt_user mrmqtt -mqtt_password coolpass -measurement_unit min
-```
-The state topic could be changed by the mqtt_state_topic config (defaults to 'homeassistant/sensor/%v/state'. The %v is replaced with the sensor_name value):
-```bash
-./rockbin -mqtt_server mqtt://192.168.0.144:1883 -mqtt_user mrmqtt -mqtt_password coolpass -mqtt_state_topic 'rockbin/%v/state' -measurement_unit min
-```
-You can increase the logging level to help setting up connections using 
-```bash
-./rockbin -mqtt_server mqtt://192.168.0.144:1883 -measurement_unit min -log_level debug
-```
+Please contact me first with any suggestied changes, or before opening a PR. The main aim and scope of this project is to get the robot to report the bin status, so please keep this in mind when creating a PR. 
 
 
+## Installation and setup.
 
-|parameter|default|description|
-|---------|:-----:|:----------|
-|-mqtt_server     |mqtt://localhost:1883|MQTT server address|
-|-sensor_name|vacuumbin|Name of sensor created in Home Assistant.|
-|-full_time|0|When 0 then sensor is expressed in minutes. When greater than 0 then sensor is expressed in % where full_time is number of seconds in 100%.| 
-|-measurement_unit|%|In what unit should the measurement be sent (%, sec, min)|
-|-file_path|/mnt/data/rockrobo/RoboController.cfg|file path of RoboController.cfg|
-|-log_level|Fatal|Level of logging (trace, debug, info, warn, error, fatal, panic).|
-|-mqtt_state_topic | homeassistant/sensor/%v/state | State topic (%v is replaced with the sensor_name value) |
-|-mqtt_user | "" |  | "" | mqtt user |
-|-mqtt_password | "" | mqtt password |
-        
-If your mqtt broker requires authentication, you can set the environment variables (MQTT_USER and MQTT_PASSWORD) in the `rockbin.conf` file. 
-
-### Setting it up as an upstart service
-
-_This is only valif for pre 2008 devices. Please see issue [#5](https://github.com/johnDorian/rockbin/issues/5) for a work around_
+The client can be started/tested using the following commands.
 
 ```bash
-# put the binary in the correct folder
-cp .rockbin /usr/local/bin/
-# edit rockbin.conf and set proper parameters to rockbin command
-vi rockbin.conf
-# put the upstart config file into the correct file
-cp .rockbin.conf /etc/init/rockbin.conf
-# reload the upstart configs
-initctl reload-configuration
-# start the service
-service rockbin start
+# copy the binary to the vacuum
+scp rockbin root@...:/root/rockbin
+# ssh into the vacuum
+ssh root@...
+# setup the config file and install the required service script (e.g. /etc/init/S12rockbin). 
+# This will overwrite any existing service scripts - please make a backup beforehand. 
+./rockbin configure
+# test the new version
+./rockbin serve --log_level debug
+# If everything seems to be working finish the install.
+# move the binary into the correct location
+chmod +x rockbin
+mv rockbin /usr/local/bin/rockbin
+# restart the vacuum
+reboot now
 ```
+
+The above command set will setup the rockbin service and setup the configuration file according to your responses.
 
 ## Home assistant 
 An example of sending the vacuum to the rubbish bin is below: 
@@ -139,65 +88,15 @@ An example of sending the vacuum to the rubbish bin is below:
         entity_id: vacuum.xiaomi_vacuum_cleaner
 ```
 
-## Troubleshooting connection issues
 
+## Building for the vacuum
 
-If you're having difficulty connecting to the mutt server, it is possible to run the rock bin app manually with debug login enabled. To do this you can do the following assuming you have copied the binary to the `/usr/local/bin/` (`cp .rockbin /usr/local/bin/`) folder. 
+***Pre-built binaries are available in the releases.***
 
-1. Make sure the app is callable (installed correctly). 
-```bash
-rockbin --help
+You can build it on your computer rather than the vacuum using: 
+
+```bash 
+GOARM=7 GOARCH=arm GOOS=linux go build 
+# or use the taskfile:
+task build_vacuum
 ```
-
-2. Test the connection to the mqtt server (change the mqtt_server address accordingly). 
-```bash
-rockbin -mqtt_server mqtt://192.168.0.144:1883 -log_level debug
-```
-
-If you require a username and password to connect to the mqtt_server, you can pass these using: 
-```bash
-MQTT_USER=mqttuser MQTT_PASSWORD='Some%!Strong$Pass' rockbin -mqtt_server mqtt://192.168.0.144:1883 -log_level debug
-```
-
-3. If the above works correctly, you will need to update [rockbin.conf](rockbin.conf) accordingly. If you're using authentication a sample of the required [rockbin.conf](rockbin.conf) would look like 
-
-```text
-description     "rockbin mqtt publisher for the bin"
-start on filesystem and net-device-up IFACE=wlan0
-stop on runlevel [!2345]
-respawn
-umask 022
-setuid root
-setgid root
-console log
-env MQTT_USER=mqttuser
-env MQTT_PASSWORD='Some%!Strong$Pass'
-script 
-    exec /usr/local/bin/rockbin -mqtt_server mqtt://192.168.0.144:1883 -full_time 2400
-end script
-```
-
-If you don't require a username or password, then leave these commented out.  
-```text
-#env MQTT_USER=mqttuser
-#env MQTT_PASSWORD='Some%!Strong$Pass'
-```
-
-If the upstart script is not working, but step 2 was working correctly, add the `-log_level debug` flag to the upstart script for more logging information. 
-
-4. After adding the configuration script. Reboot the vacuum: 
-```bash
-sudo reboot now
-```
-
-5. Once the system is back up you should see the service in the list provided by: 
-```bash
-ps aux
-```
-
-6. If you had enabled debug mode earlier. You can check the logs for the output
-
-```bash
-cat /var/log/upstart/rockbin.log
-```
-
