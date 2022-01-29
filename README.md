@@ -29,16 +29,16 @@ The client can be started/tested using the following commands.
 scp rockbin root@...:/root/rockbin
 # ssh into the vacuum
 ssh root@...
+# move the binary into the correct location
+mv rockbin /usr/local/bin/rockbin
+# make the binary executable
+chmod +x rockbin
 # setup the config file and install the required service script (e.g. /etc/init/S12rockbin). 
 # This will overwrite any existing service scripts - please make a backup beforehand. 
-./rockbin configure
+rockbin configure
 # test the new version
-./rockbin serve --log_level debug
-# If everything seems to be working finish the install.
-# move the binary into the correct location
-chmod +x rockbin
-mv rockbin /usr/local/bin/rockbin
-# restart the vacuum
+rockbin serve --log_level debug
+# If everything seems to be working finish restart the vacuum
 reboot now
 ```
 

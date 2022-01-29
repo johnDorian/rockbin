@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 	"html/template"
+	"io/fs"
 	"os"
 	"path"
 
@@ -77,6 +78,7 @@ func NewPrompter(flags *pflag.FlagSet, configFile, serviceFilePath string) (*CLI
 
 	setup.ConfigFile = configFile
 	setup.ServiceFile = path.Join(serviceFilePath, serviceFile)
+	// make it executable here.
 
 	return &setup, nil
 }
@@ -106,7 +108,10 @@ func (p *CLIVariables) WriteOutTemplate(file string, data interface{}) error {
 	var (
 		outputFile string
 		tmplFile   string
+		fileMode   fs.FileMode
 	)
+
+	fileMode = 0666
 
 	switch file {
 	case "config":
@@ -116,6 +121,7 @@ func (p *CLIVariables) WriteOutTemplate(file string, data interface{}) error {
 	case "service":
 		tmplFile = path.Join("templates", fmt.Sprintf("%s.%s", path.Base(p.ServiceFile), "tmpl"))
 		outputFile = p.ServiceFile
+		fileMode = 0755
 	}
 	fmt.Printf("Writing %s file to: %s\n", file, outputFile)
 	t, err := template.ParseFS(templateFiles, tmplFile)
@@ -126,6 +132,7 @@ func (p *CLIVariables) WriteOutTemplate(file string, data interface{}) error {
 	os.MkdirAll(path.Dir(outputFile), 0755)
 
 	f, err := os.Create(outputFile)
+
 	if err != nil {
 		return err
 	}
@@ -133,6 +140,7 @@ func (p *CLIVariables) WriteOutTemplate(file string, data interface{}) error {
 
 	err = t.Execute(f, data)
 
+	os.Chmod(outputFile, fileMode)
 	return err
 
 }
